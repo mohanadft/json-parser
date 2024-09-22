@@ -10,6 +10,18 @@ struct Args {
     file_name: String,
 }
 
+fn get_content(file_name: &String) -> String {
+    let a: String = match fs::read_to_string(&file_name) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{}", e.to_string());
+            std::process::exit(1);
+        }
+    };
+
+    return a;
+}
+
 fn validate_json_file(file_name: &str) -> Result<String, String> {
     let re = Regex::new(r"\.json$").unwrap();
 
@@ -19,10 +31,11 @@ fn validate_json_file(file_name: &str) -> Result<String, String> {
         Err(String::from("The file must have a .json extension"))
     }
 }
+
 fn main() {
     let Args { file_name } = Args::parse();
 
-    let content = fs::read_to_string(&file_name).unwrap();
+    let content = get_content(&file_name);
 
     println!("{content}");
 }
